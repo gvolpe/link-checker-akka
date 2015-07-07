@@ -42,7 +42,6 @@ class Master extends Actor {
   }
 
   override def postStop(): Unit = {
-    WebClient.shutdown()
     context.system.shutdown()
   }
 

@@ -2,7 +2,7 @@ package com.gvolpe.linkchecker.actors
 
 import akka.actor.{Props, Actor}
 import akka.pattern.pipe
-import com.gvolpe.linkchecker.{LinksFinder, WebClient}
+import com.gvolpe.linkchecker.{AsyncWebClient, LinksFinder, WebClient}
 
 object Getter {
 
@@ -18,8 +18,9 @@ class Getter(url: String, depth: Int) extends Actor {
   import Getter._
 
   implicit val exec = context.dispatcher
+  def client: WebClient = AsyncWebClient
 
-  WebClient get(url) pipeTo self
+  client get(url) pipeTo self
 
   def receive = {
     case body: String =>

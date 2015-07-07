@@ -2,7 +2,7 @@ package com.gvolpe.linkchecker.actors
 
 import akka.actor.{ActorRef, Actor}
 import akka.pattern.pipe
-import com.gvolpe.linkchecker.WebClient
+import com.gvolpe.linkchecker.{AsyncWebClient, WebClient}
 
 object Cache {
 
@@ -24,7 +24,8 @@ class Cache extends Actor {
       if (cache contains url) sender ! cache(url)
       else {
         val client = sender()
-        WebClient get url map (Result(client, url, _)) pipeTo self
+        val webClient: WebClient = AsyncWebClient
+        webClient get url map (Result(client, url, _)) pipeTo self
       }
     case Result(client, url, body) =>
       cache += url -> body
