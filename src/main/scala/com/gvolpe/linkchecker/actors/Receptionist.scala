@@ -21,6 +21,8 @@ class Receptionist extends Actor {
 
   def receive = waiting
 
+  def controllerProps: Props = Controller.props
+
   val waiting: Receive = {
     case Get(url) =>
       context.become(runNext(Vector(Job(sender, url))))
@@ -40,7 +42,7 @@ class Receptionist extends Actor {
     reqNo += 1
     if (queue isEmpty) waiting
     else {
-      val controller = context.actorOf(Controller.props, s"c$reqNo")
+      val controller = context.actorOf(controllerProps, s"c$reqNo")
       controller ! Controller.Check(queue.head.url, 2)
       running(queue)
     }
